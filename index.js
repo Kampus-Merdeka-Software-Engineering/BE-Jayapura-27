@@ -1,9 +1,10 @@
 const express = require("express")
 const cors = require('cors')
-const nodemailer = require('nodemailer')
 const path = require('path')
 const db = require('./db')
 const sequelize = require("sequelize")
+const bodyParser = require('body-parser')
+const ejs = require('ejs')
 
 // init express server and router
 const app = express();
@@ -15,107 +16,114 @@ app.use(cors())
 
 
 const router = express.Router()
-router.get('/booking', function (req, res, next) {
-   //method get data booking from database
+router.get('/', function (req, res, next) {
+    res.redirect('https://kampus-merdeka-software-engineering.github.io/FE-Jayapura-27/HTML/index.html')
 });
 
-router.post('/register', function (req, res, next) {
-    if(req.body.username == "" || req.body.email == "" || req.body.password == "" ){
-        res.status(400).json({
-            message: "EMPTY FIELD"
-        })
-        return
+// Membuat route POST untuk sign up
+router.post('/registrasi', async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+      // Cari pengguna dengan username yang sama
+      const existingUser = await db.user.findOne({
+        where: {
+          username: username,
+        },
+      });
+      // Jika pengguna sudah ada
+      if (existingUser) {
+        return res.status(409).json({ message: 'Username sudah digunakan' });
+      }
+      // Buat pengguna baru
+      const newUser = await db.user.create({
+        username: username,
+        email: email,
+        password: password,
+      });
+      res.status(201).json({ message: 'Pendaftaran berhasil', user: newUser });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ message: 'Terjadi kesalahan saat pendaftaran' });
     }
-
-    db.user.create({
-        id_user: req.body.id_user
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-
-    })
-    .then(function(data){
-        db.user.create({
-            id_user: data.id
-        }).then(function(){
-            res.status(201).json({
-                message: "user berhasil terdaftar"
+});
+    
+    // Membuat route POST untuk login
+    router.post('/login', function (req, res, next) {
+        if (req.body.username == "" || req.body.password == ""){
+            res.status(400).json({
+                message: "EMPTY FIELD"
             })
-        })
-    })
-    .catch(function(err){
-        console.log(err)
-        res.status(500).json({
-            message: err
-        })
-    })
-});
-
-router.post('/login', function (req, res, next) {
-    if(req.body.username == "" || req.body.password == ""){
-        res.status(400).json({
-            message: "EMPTY FIELD"
-        })
-        return
-    }
-
-    db.user.findOne({
-        where: {
-            username: req.body.username,
-            password: req.body.password
+            return
         }
-    })
-    .then(function(data){
-        res.status(200).json({
-            message: "success login",
-            data: data
-        })
-    })
-    .catch(function(err){
-        console.log(err)
-        res.status(500).json({
-            message: err
-        })
-    })
-});
-
-router.post('/booking', function (req, res, next) {
-    db.booking.findOne({
-        where: {
-            Username: req.body.Username
-        }
-    })
-    .then(function(data){
-        db.booking.findOne({
+    
+        db.user.findOne({
             where: {
-                name: req.body.name,
-                number_phone: req.body.number_phone,
-                email: req.body.email
-                service: req.body.service
+                username: req.body.username,
+                password: req.body.password
             }
         })
-            }).then(function(){
-                 res.status(200).json({
-                   message: "You Have Made a Booking :)"
-             })
+        .then(function(data){
+            res.status(200).json({
+                message: "success login",
+                data: data
             })
-            .catch(function(err){
-                console.log(err)
-                res.status(500).json({
-                    message: err
-                })
+        })
+        .catch(function(err){
+            console.log(err)
+            res.status(500).json({
+                message: err
             })
+        })
+    });
+
+    router.post('/booking', async (req, res) => {
+        const { nama, noHP, email, service } = req.body;
+
+          try {
+            // Simpan data booking ke dalam database
+            const newbooking = await db.booking.create({
+              nama,
+              noHP,
+              email,
+              service,
+            });
+        res.status(201).json({ message: 'Booking berhasil.' });
+          } catch (error) {
+            console.error('Terjadi kesalahan saat melakukan booking:', error);
+            res.status(500).json({ message: 'Terjadi kesalahan saat melakukan booking.' });
+          }
         });
 
-router.get('/booking', function (req, res, next) {
-    res.redirect('https://nodejs-production-176d.up.railway.app/static/booking.html')
-});
+    
+// Membuat router get booking
+router.post('/riwayat', async (req, res) => {
+    const { email } = req.body;
+    console.log(req.body)
+    console.log(email)
+  
+    try {
+        const bookings = await db.booking.findAll({
+          where: { email }
+        });
+      
+        res.status(200).json({
+          message: "riwayat booking terlihat",
+          data: bookings
+        });
+      } catch (error) {
+        console.error('Terjadi kesalahan saat mengambil data booking:', error);
+        res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data booking.' });
+      }
+  });
+// router.get('/booking', function (req, res, next) {
+//     res.redirect('http://localhost:4500/static/riwayat_booking.html')
+// });
 
 // http router
 app.use('/static', express.static(path.join(__dirname, 'static')))
 app.use("/", router);
 
-const port = 3000
+const port = 4500
 app.listen(port, function () {
     db.conn.authenticate()
         .then(function () {
