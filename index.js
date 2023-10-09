@@ -17,7 +17,7 @@ app.use(cors())
 
 const router = express.Router()
 router.get('/', function (req, res, next) {
-    res.redirect('https://kampus-merdeka-software-engineering.github.io/FE-Jayapura-27/HTML/index.html')
+    res.redirect('https://kampus-merdeka-software-engineering.github.io/FE-Jayapura-27/index.html')
 });
 
 // Membuat route POST untuk sign up
