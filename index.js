@@ -74,6 +74,7 @@ router.get('/login', function (req, res, next) {
             console.log(err)
             res.status(500).json({
                 message: err
+                data: err
             })
         })
     });
