@@ -46,7 +46,9 @@ router.post('/registrasi', async (req, res) => {
       res.status(500).json({ message: 'Terjadi kesalahan saat pendaftaran' });
     }
 });
-    
+router.get('/login', function (req, res, next) {
+  res.redirect('https://kampus-merdeka-software-engineering.github.io/FE-Jayapura-27/login.html')
+});
     // Membuat route POST untuk login
     router.post('/login', function (req, res, next) {
         if (req.body.username == "" || req.body.password == ""){
