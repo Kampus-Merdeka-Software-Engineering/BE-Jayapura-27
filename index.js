@@ -58,14 +58,6 @@ router.get('/login', function (req, res, next) {
             })
             return
         }
-        if (req.body.username!== "username" || req.body.password !== "password"){
-          res.status(404).json({message:'Pengguna tidak ditemukan'});
-        }
-        
-      
-        console.log(req.body.username),
-        console.log(req.body.password)
-  
         db.user.findOne({
             where: {
                 username: req.body.username,
@@ -77,6 +69,13 @@ router.get('/login', function (req, res, next) {
                 message: "success login",
                 data: data
             })
+        .else(function(err){
+          console.log(req.body.username),
+          console.log(req.body.password)
+          res.status(404).json({
+            message:'Pengguna tidak ditemukan'
+          })
+        })
 
         })
         .catch(function(err){
