@@ -46,25 +46,51 @@ router.post('/registrasi', async (req, res) => {
       res.status(500).json({ message: 'Terjadi kesalahan saat pendaftaran' });
     }
 });
-
+router.post('/login', function (req, res, next) {
+        if (req.body.username == "" || req.body.password == ""){
+            res.status(400).json({
+                message: "EMPTY FIELD"
+            })
+            return
+        }
+    
+        db.user.findOne({
+            where: {
+                username: req.body.username,
+                password: req.body.password
+            }
+        })
+        .then(function(data){
+            res.status(200).json({
+                message: "success login",
+                data: data
+            })
+        })
+        .catch(function(err){
+            console.log(err)
+            res.status(500).json({
+                message: err
+            })
+        })
+    });
  // Membuat route POST untuk login
-    router.post('/login', async (req, res, next) => {
-      try {
-        const { username, password } = req.body;
-        // Find the user by email
-        const user = await User.findOne({ where: { username:username } });
-        if (!user) {
-          return res.status(404).json({ success: false, message: 'User not found' });
-        }
-        if (password !== user.password) {
-          return res.status(401).json({ success: false, message: 'Invalid password' });
-        }
-        // Authentication successful
-        res.json({ success: true, message: 'Login successful', user });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-    })
+    // router.post('/login', async (req, res, next) => {
+    //   try {
+    //     const { username, password } = req.body;
+    //     // Find the user by email
+    //     const user = await User.findOne({ where: { username:username } });
+    //     if (!user) {
+    //       return res.status(404).json({ success: false, message: 'User not found' });
+    //     }
+    //     if (password !== user.password) {
+    //       return res.status(401).json({ success: false, message: 'Invalid password' });
+    //     }
+    //     // Authentication successful
+    //     res.json({ success: true, message: 'Login successful', user });
+    //   } catch (error) {
+    //     res.status(500).json({ success: false, error: error.message });
+    //   }
+    // })
 
       router.post('/booking', async (req, res) => {
         const { nama, noHP, email, service } = req.body;
