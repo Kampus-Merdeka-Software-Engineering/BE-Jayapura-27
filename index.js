@@ -56,13 +56,13 @@ router.post('/registrasi', async (req, res) => {
       return
     }
    
-      db.user.findOne({
+    db.user.findOne({
       where: {
           username: req.body.username,
           password: req.body.password
       }
       })
-    .then(function(data){
+    then(function(data){
       res.status(200).json({
           message: "success login",
           data: data
@@ -76,7 +76,7 @@ router.post('/registrasi', async (req, res) => {
      })
       });
 
-    router.post('/booking', async (req, res) => {
+      router.post('/booking', async (req, res) => {
         const { nama, noHP, email, service } = req.body;
 
           try {
@@ -101,19 +101,19 @@ router.post('/riwayat', async (req, res) => {
     console.log(req.body)
     console.log(email)
   
-    try {
-        const bookings = await db.booking.findAll({
-          where: { email }
-        });
+try {
+      const bookings = await db.booking.findAll({
+      where: { email }
+      });
       
-        res.status(200).json({
-          message: "riwayat booking terlihat",
-          data: bookings
-        });
-      } catch (error) {
-        console.error('Terjadi kesalahan saat mengambil data booking:', error);
-        res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data booking.' });
-      }
+      res.status(200).json({
+        message: "riwayat booking terlihat",
+        data: bookings
+      });
+    } catch (error) {
+      console.error('Terjadi kesalahan saat mengambil data booking:', error);
+      res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data booking.' });
+    }
   });
 // router.get('/booking', function (req, res, next) {
 //     res.redirect('http://localhost:4500/static/riwayat_booking.html')
