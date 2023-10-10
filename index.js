@@ -60,11 +60,17 @@ router.get('/login', function (req, res, next) {
             })
             return
         }
-        console.log(
-          req.body.username,
-          req.body.password
-        )
-         
+        if (!username){
+          return
+          res.status(404).json({message:'Pengguna tidak ditemukan'});
+        }
+        
+      
+      console.log(
+        req.body.username,
+        req.body.password
+      )
+  
         db.user.findOne({
             where: {
                 username: req.body.username,
