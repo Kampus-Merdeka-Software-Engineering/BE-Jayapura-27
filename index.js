@@ -47,43 +47,35 @@ router.post('/registrasi', async (req, res) => {
     }
 });
 
-router.get('/login', function (req, res, next) {
-  res.redirect('https://kampus-merdeka-software-engineering.github.io/FE-Jayapura-27/login.html')
-});
-    // Membuat route POST untuk login
-    router.post('/login', function (req, res, next) {
-        if (req.body.username == "" || req.body.password == ""){
-            res.status(400).json({
-                message: "EMPTY FIELD"
-            })
-            return
-        }
-        if (!userDitemukan(username, password)) {
-          res.status(404).json({
-              message: "Pengguna tidak ditemukan"
-          });
-          return;
+ // Membuat route POST untuk login
+ router.post('/login', function (req, res, next) {
+  if (req.body.username == "" || req.body.password == ""){
+      res.status(400).json({
+          message: "EMPTY FIELD"
+      })
+      return
+  }
+   
+  db.user.findOne({
+      where: {
+          username: req.body.username,
+          password: req.body.password
       }
-        db.user.findOne({
-            where: {
-                username: req.body.username,
-                password: req.body.password
-            }
-        })
-        .then(function(data){
-            res.status(200).json({
-                message: "success login",
-                data: data
-            })
-        })
-        .catch(function(err){
-            console.log(err)
-            res.status(500).json({
-                message: err,
-            
-            })
-        })
-    });
+  })
+  .then(function(data){
+      res.status(200).json({
+          message: "success login",
+          data: data
+      })
+  })
+  .catch(function(err){
+      console.log(err)
+      res.status(500).json({
+          message: err
+      })
+  })
+});
+
 
     router.post('/booking', async (req, res) => {
         const { nama, noHP, email, service } = req.body;
