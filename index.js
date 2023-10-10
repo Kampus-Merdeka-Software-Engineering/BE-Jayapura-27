@@ -84,8 +84,8 @@ router.post('/registrasi', async (req, res) => {
 // });
  // Membuat route POST untuk login
     router.post('/login', async (req, res, next) => {
-      try {
         const { username, password } = req.body;
+      try {
         // Find the user by email
         const user = await User.findOne({ where: { username:username } });
         if (!user) {
@@ -99,7 +99,7 @@ router.post('/registrasi', async (req, res) => {
       } catch (error) {
         res.status(500).json({ success: false, error: error.message });
       }
-    })
+    });
 
       router.post('/booking', async (req, res) => {
         const { nama, noHP, email, service } = req.body;
