@@ -47,7 +47,6 @@ router.post('/registrasi', async (req, res) => {
     }
 });
 
-
 router.get('/login', function (req, res, next) {
   res.redirect('https://kampus-merdeka-software-engineering.github.io/FE-Jayapura-27/login.html')
 });
@@ -59,8 +58,7 @@ router.get('/login', function (req, res, next) {
             })
             return
         }
-        if (!username){
-          return
+        if (req.body.username!== "username" || req.body.password !== "password"){
           res.status(404).json({message:'Pengguna tidak ditemukan'});
         }
         
