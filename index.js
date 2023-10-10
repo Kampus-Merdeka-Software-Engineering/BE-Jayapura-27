@@ -66,10 +66,8 @@ router.get('/login', function (req, res, next) {
         }
         
       
-      console.log(
-        req.body.username,
-        req.body.password
-      )
+        console.log(req.body.username),
+        console.log(req.body.password)
   
         db.user.findOne({
             where: {
