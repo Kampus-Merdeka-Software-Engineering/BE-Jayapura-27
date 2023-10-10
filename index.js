@@ -58,7 +58,7 @@ router.get('/login', function (req, res, next) {
             })
             return
         }
-        if (!penggunaDitemukan(username, password)) {
+        if (!userDitemukan(username, password)) {
           res.status(404).json({
               message: "Pengguna tidak ditemukan"
           });
