@@ -69,11 +69,13 @@ router.post('/registrasi', async (req, res) => {
       })
     })
     .catch(function(err){
-      console.log(err)
-      res.status(500).json({
-          message: err
+      console.error("Error:", err);
+    if (err.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({ message: "Username sudah digunakan." });
+    } else {
+        res.status(500).json({ message: "Terjadi kesalahan dalam server." });
+    }
       })
-     })
       });
 
       router.post('/booking', async (req, res) => {
