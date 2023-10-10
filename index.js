@@ -60,7 +60,11 @@ router.get('/login', function (req, res, next) {
             })
             return
         }
-    
+        console.log(
+          req.body.username,
+          req.body.password
+        )
+         
         db.user.findOne({
             where: {
                 username: req.body.username,
@@ -72,12 +76,13 @@ router.get('/login', function (req, res, next) {
                 message: "success login",
                 data: data
             })
+
         })
         .catch(function(err){
             console.log(err)
             res.status(500).json({
-                message: err
-                data: err
+                message: err,
+            
             })
         })
     });
